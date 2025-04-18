@@ -37,7 +37,7 @@ body {
     background-color: var(--text-light);
     display: flex;
     flex-direction: column;
-    border-radius: 15px;
+    border-radius: 0px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
