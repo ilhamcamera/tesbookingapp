@@ -63,8 +63,6 @@ const utils = {
         });
     },
 
-    isWeekend: (date) => [0, 6].includes(date.getDay()),
-
     isToday: (date) => {
         const today = new Date();
         return date.getDate() === today.getDate() && 
@@ -321,10 +319,8 @@ const core = {
             return;
         }
         
-        // Simpan posisi scroll
         state.scrollPosition = window.scrollY || window.pageYOffset;
         
-        // Mempersiapkan data untuk modal
         document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
         document.getElementById('displayUnit').textContent = unit;
@@ -348,7 +344,6 @@ const core = {
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
         
-        // Tampilkan modal
         const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
     },
@@ -517,20 +512,15 @@ const init = async () => {
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
-    // Perbaikan untuk modal booking
     elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
-        // Pastikan modal dapat di-scroll dan form dapat diisi
         document.body.classList.add('modal-open');
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
         document.body.style.overflow = '';
         document.querySelector('.modal-dialog').style.overflowY = 'auto';
-        document.querySelector('.modal-content').style.position = 'relative';
-        document.querySelector('.modal-content').style.transform = 'none';
     });
     
-    // Atur ulang saat modal ditutup
     elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
         document.body.classList.remove('modal-open');
         document.body.style.position = '';
