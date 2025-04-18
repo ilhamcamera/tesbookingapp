@@ -76,20 +76,21 @@
                 </div>
                 <div class="filter-group">
                     <label for="filterStatus" class="form-label">Status:</label>
-                <select id="filterStatus" class="form-select">
-                    <option value="all">Semua</option>
-                    <option value="booked">Terbooking</option>
-                    <option value="available">Tersedia</option>
-                </select>
-            </div>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color available-legend"></div>
-                    <span>Tersedia</span>
+                    <select id="filterStatus" class="form-select">
+                        <option value="all">Semua</option>
+                        <option value="booked">Terbooking</option>
+                        <option value="available">Tersedia</option>
+                    </select>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color booked-legend"></div>
-                    <span>Terbooking</span>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color available-legend"></div>
+                        <span>Tersedia</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color booked-legend"></div>
+                        <span>Terbooking</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,15 +99,15 @@
         </footer>
     </div>
 
-    <!-- Modal Booking -->
-    <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen-sm-down">
+    <!-- Fixed Modal Booking -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Form Penyewaan</h5>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="bookingModalLabel"><i class="fas fa-calendar-plus me-2"></i>Form Penyewaan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-3">
                     <form id="bookingForm">
                         <input type="hidden" id="selectedUnit">
                         <input type="hidden" id="selectedDate">
@@ -184,16 +185,15 @@
                         <div class="alert alert-danger" id="documentsError" style="display:none;">
                             Harap pilih minimal 3 dokumen jaminan
                         </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-2"></i> Batal
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-2"></i> Kirim
-                            </button>
-                        </div>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i> Batal
+                    </button>
+                    <button type="submit" form="bookingForm" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i> Kirim
+                    </button>
                 </div>
             </div>
         </div>
