@@ -63,6 +63,8 @@ const utils = {
         });
     },
 
+    isWeekend: (date) => [0, 6].includes(date.getDay()),
+
     isToday: (date) => {
         const today = new Date();
         return date.getDate() === today.getDate() && 
@@ -83,8 +85,8 @@ const utils = {
     calculateCellWidth: () => {
         const containerWidth = document.querySelector('.container').clientWidth;
         const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
-        const unitColumnWidth = 120; // Updated to match CSS
-        const minCellWidth = 48; // Updated to match CSS
+        const unitColumnWidth = 100;
+        const minCellWidth = 40;
         const availableWidth = containerWidth - unitColumnWidth - 20;
         return Math.max(minCellWidth, Math.floor(availableWidth / daysInMonth));
     },
@@ -94,7 +96,45 @@ const utils = {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         return selectedDate < today;
-ස්‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍stry 'Failed to load units:', error);
+    }
+};
+
+// Core Functions
+const core = {
+    loadUnits: async () => {
+        try {
+            const response = await fetch(CONFIG.unitsJsonPath);
+            if (!response.ok) throw new Error('Failed to load units.json');
+            
+            const data = await response.json();
+            
+            const nameCount = {};
+            const processedUnits = [];
+            
+            data.units.forEach(unit => {
+                nameCount[unit.name] = (nameCount[unit.name] || 0) + 1;
+            });
+            
+            const nameIndex = {};
+            data.units.forEach(unit => {
+                let displayName = unit.name;
+                if (nameCount[unit.name] > 1) {
+                    nameIndex[unit.name] = (nameIndex[unit.name] || 0) + 1;
+                    displayName = `${unit.name} (${nameIndex[unit.name]})`;
+                }
+                
+                processedUnits.push({
+                    originalName: unit.name,
+                    displayName: displayName,
+                    category: unit.category
+                });
+            });
+            
+            state.units = processedUnits;
+            state.categories = data.categories;
+            return { units: state.units, categories: state.categories };
+        } catch (error) {
+            console.error('Error loading units:', error);
             throw error;
         }
     },
@@ -281,7 +321,11 @@ const utils = {
             return;
         }
         
+        console.log('Opening modal for unit:', unit, 'date:', dateStr); // Debugging
+        
         state.scrollPosition = window.scrollY || window.pageYOffset;
+        
+        const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
         
         document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
@@ -306,8 +350,8 @@ const utils = {
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
         
-        const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
+        console.log('Modal shown'); // Debugging
     },
 
     toggleFilterPanel: () => {
@@ -318,10 +362,12 @@ const utils = {
             document.body.style.position = 'fixed';
             document.body.style.top = `-${state.scrollPosition}px`;
             document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
         } else {
             document.body.style.position = '';
             document.body.style.top = '';
             document.body.style.width = '';
+            document.body.style.overflow = '';
             window.scrollTo(0, state.scrollPosition || 0);
         }
     },
@@ -378,9 +424,7 @@ Mohon konfirmasi ketersediaannya. Terima kasih.`;
     window.open(whatsappLink, '_blank');
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    if (modal) {
-        modal.hide();
-    }
+    modal.hide();
 });
 
 // Event Handlers
@@ -437,15 +481,15 @@ const handlers = {
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault();
-            elements.tableContainer.scrollLeft += deltaX * 0.8; // Smoother scrolling
-        } else {
-            elements.tableContainer.scrollTop += deltaY * 0.8;
+            elements.tableContainer.scrollLeft += deltaX * 0.5;
         }
     }
 };
 
 // Initialize Application
 const init = async () => {
+    state.bookingModal = new bootstrap.Modal(elements.bookingModalElem);
+    
     const now = new Date();
     state.currentMonth = now.getMonth();
     state.currentYear = now.getFullYear();
@@ -476,17 +520,15 @@ const init = async () => {
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
-    elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
-        document.body.classList.add('modal-open');
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
-        document.querySelector('.modal-dialog').style.overflowY = 'auto';
+    elements.bookingModalElem.addEventListener('show.bs.modal', () => {
+        state.scrollPosition = window.scrollY || window.pageYOffset;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${state.scrollPosition}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
     });
     
     elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
-        document.body.classList.remove('modal-open');
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
