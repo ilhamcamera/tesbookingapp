@@ -321,35 +321,27 @@ const core = {
             return;
         }
         
-        // Simpan posisi scroll
-        state.scrollPosition = window.scrollY || window.pageYOffset;
-        
-        // Mempersiapkan data untuk modal
-        document.getElementById('selectedUnit').value = unit;
-        document.getElementById('selectedDate').value = dateStr;
-        document.getElementById('displayUnit').textContent = unit;
-        document.getElementById('displayDate').textContent = utils.formatFullDate(dateStr);
-        
-        const date = utils.parseDate(dateStr);
-        const returnDate = new Date(date);
-        returnDate.setDate(returnDate.getDate() + 1);
-        
-        document.getElementById('returnDate').value = utils.formatDate(returnDate);
-        document.getElementById('pickupTime').value = '08:00';
-        document.getElementById('returnTime').value = '17:00';
-        
+        // Reset form
         document.getElementById('bookingForm').reset();
+        
+        // Set form values
         document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
         document.getElementById('displayUnit').textContent = unit;
         document.getElementById('displayDate').textContent = utils.formatFullDate(dateStr);
+        
+        const returnDate = new Date(selectedDate);
+        returnDate.setDate(returnDate.getDate() + 1);
         document.getElementById('returnDate').value = utils.formatDate(returnDate);
         document.getElementById('pickupTime').value = '08:00';
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
         
-        // Tampilkan modal
-        const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
+        // Initialize modal
+        const modal = new bootstrap.Modal(document.getElementById('bookingModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
         modal.show();
     },
 
@@ -516,26 +508,6 @@ const init = async () => {
     elements.filterStatus.addEventListener('change', core.generateMatrix);
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
-    
-    // Perbaikan untuk modal booking
-    elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
-        // Pastikan modal dapat di-scroll dan form dapat diisi
-        document.querySelector('.modal-dialog').style.overflowY = 'auto';
-        document.querySelector('.modal-content').style.position = 'relative';
-        document.querySelector('.modal-content').style.transform = 'none';
-        
-        // Hapus pengaturan posisi tetap dari body
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
-        document.body.style.overflow = '';
-    });
-    
-    // Atur ulang saat modal ditutup
-    elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
-        window.scrollTo(0, state.scrollPosition || 0);
-    });
     
     elements.tableContainer.addEventListener('touchstart', handlers.onTouchStart);
     elements.tableContainer.addEventListener('touchmove', handlers.onTouchMove, { passive: false });
