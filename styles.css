@@ -13,7 +13,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Montserrat', sans-serif; /* Changed to Montserrat */
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-dark);
     line-height: 1.6;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1504707748692-419802cf939d') no-repeat center center fixed;
@@ -56,10 +56,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px; /* Added padding for better spacing */
+    padding: 8px 16px;
     margin-bottom: 8px;
-    background: var(--primary-color); /* Match filter panel background */
-    border-radius: 10px; /* Rounded corners for consistency */
+    background: var(--primary-color);
+    border-radius: 10px;
     animation: slideInFromTop 0.5s ease-out;
 }
 
@@ -71,7 +71,7 @@ body {
 .header h1 {
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--text-light); /* Changed to white for contrast */
+    color: var(--text-light);
     margin: 0;
     display: flex;
     align-items: center;
@@ -248,7 +248,7 @@ body {
 }
 
 .booked .description {
-    color: var(--text-dark); /* Changed to black for "Sudah Kembali" */
+    color: var(--text-dark);
 }
 
 .app-footer {
@@ -307,7 +307,7 @@ body {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 60px; /* Add padding to prevent content from overlapping footer */
+    padding-bottom: 60px;
 }
 
 .filter-group {
@@ -371,11 +371,19 @@ body {
     background-color: var(--booked-color);
 }
 
+.modal {
+    z-index: 1055; /* Lebih tinggi dari filter-panel dan loading */
+}
+
+.modal-backdrop {
+    z-index: 1050; /* Di bawah modal */
+}
+
 .modal-content {
     border-radius: 15px;
+    background: #ffffff; /* Putih solid */
     height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    overflow: hidden;
 }
 
 .modal-header {
@@ -389,12 +397,32 @@ body {
     padding: 16px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 150px); /* Batasi tinggi */
+    scrollbar-width: thin;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #600000;
 }
 
 .modal-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border-color);
-    background: rgba(255, 255, 255, 0.9);
+    background: #ffffff;
     border-radius: 0 0 15px 15px;
 }
 
@@ -410,6 +438,14 @@ body {
 .form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.2);
+}
+
+.modal input,
+.modal textarea,
+.modal select {
+    user-select: auto;
+    -webkit-user-select: auto;
+    pointer-events: auto;
 }
 
 .form-check {
