@@ -14,6 +14,7 @@ const state = {
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
     bookingModal: null,
+    filterPanelOpen: false,
     scrollPosition: 0,
     touchStartX: 0,
     touchStartY: 0
@@ -28,7 +29,9 @@ const elements = {
     prevMonthBtn: document.getElementById('prevMonth'),
     nextMonthBtn: document.getElementById('nextMonth'),
     refreshBtn: document.getElementById('refreshBtn'),
-    lastUpdated: document.getElementById('lastUpdated'),
+    filterBtn: document.getElementById('filterBtn'),
+    filterPanel: document.getElementById('filterPanel'),
+    closeFilterBtn: document.getElementById('closeFilterBtn'),
     bookingModalElem: document.getElementById('bookingModal'),
     filterStatus: document.getElementById('filterStatus'),
     filterUnit: document.getElementById('filterUnit'),
@@ -83,7 +86,7 @@ const utils = {
         const containerWidth = document.querySelector('.container').clientWidth;
         const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
         const unitColumnWidth = 100;
-        const minCellWidth = 35;
+        const minCellWidth = 40;
         const availableWidth = containerWidth - unitColumnWidth - 20;
         return Math.max(minCellWidth, Math.floor(availableWidth / daysInMonth));
     },
@@ -164,7 +167,6 @@ const core = {
                 }
             });
             
-            elements.lastUpdated.textContent = new Date().toLocaleString('id-ID');
             core.generateMatrix();
         } catch (error) {
             console.error('Error:', error);
@@ -183,15 +185,6 @@ const core = {
         
         const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
         const cellWidth = utils.calculateCellWidth();
-        
-        elements.tableContainer.classList.remove('days-28', 'days-30', 'days-31');
-        if (daysInMonth === 28) {
-            elements.tableContainer.classList.add('days-28');
-        } else if (daysInMonth === 30) {
-            elements.tableContainer.classList.add('days-30');
-        } else {
-            elements.tableContainer.classList.add('days-31');
-        }
         
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(state.currentYear, state.currentMonth, day);
@@ -263,14 +256,14 @@ const core = {
                     cell.classList.add(booking.status);
                     if (description) {
                         cell.innerHTML = `
-                            <div class="description" style="font-size: 0.6rem;" title="${description}">${description}</div>
+                            <div class="description" title="${description}">${description}</div>
                         `;
                     }
                 } else if (!booking && (selectedStatus === 'all' || selectedStatus === 'available')) {
                     cell.classList.add('available');
                     if (description) {
                         cell.innerHTML = `
-                            <div class="description" style="font-size: 0.6rem;" title="${description}">${description}</div>
+                            <div class="description" title="${description}">${description}</div>
                         `;
                     }
                 }
@@ -358,6 +351,22 @@ const core = {
         document.getElementById('documentsError').style.display = 'none';
         
         modal.show();
+    },
+
+    toggleFilterPanel: () => {
+        state.filterPanelOpen = !state.filterPanelOpen;
+        elements.filterPanel.classList.toggle('open', state.filterPanelOpen);
+        if (state.filterPanelOpen) {
+            state.scrollPosition = window.scrollY || window.pageYOffset;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${state.scrollPosition}px`;
+            document.body.style.width = '100%';
+        } else {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, state.scrollPosition || 0);
+        }
     },
 
     handleWindowResize: utils.debounce(() => {
@@ -502,6 +511,8 @@ const init = async () => {
     elements.prevMonthBtn.addEventListener('click', handlers.onPrevMonth);
     elements.nextMonthBtn.addEventListener('click', handlers.onNextMonth);
     elements.refreshBtn.addEventListener('click', handlers.onRefresh);
+    elements.filterBtn.addEventListener('click', core.toggleFilterPanel);
+    elements.closeFilterBtn.addEventListener('click', core.toggleFilterPanel);
     elements.filterStatus.addEventListener('change', core.generateMatrix);
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
@@ -524,7 +535,6 @@ const init = async () => {
     elements.tableContainer.addEventListener('touchmove', handlers.onTouchMove, { passive: false });
     
     window.addEventListener('resize', core.handleWindowResize);
-    elements.lastUpdated.textContent = new Date().toLocaleString('id-ID');
 };
 
 document.addEventListener('DOMContentLoaded', init);
