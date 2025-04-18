@@ -38,6 +38,8 @@ body {
     margin: 0;
     padding: 16px;
     background-color: var(--text-light);
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -99,9 +101,10 @@ body {
 .table-container {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: calc(100vh - 150px);
+    flex: 1;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
+    scroll-behavior: smooth;
 }
 
 .booking-matrix {
@@ -161,7 +164,7 @@ body {
     height: 48px;
     font-size: 0.75rem;
     position: relative;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
 }
 
 .date-cell.available {
@@ -219,6 +222,18 @@ body {
 
 .booked .description {
     color: var(--danger-color);
+}
+
+.app-footer {
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    background-color: var(--text-light);
+    border-top: 1px solid var(--border-color);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
 }
 
 .filter-panel {
@@ -459,5 +474,10 @@ body {
         max-width: 38px;
         height: 44px;
         font-size: 0.7rem;
+    }
+
+    .app-footer {
+        font-size: 0.75rem;
+        padding: 6px 12px;
     }
 }

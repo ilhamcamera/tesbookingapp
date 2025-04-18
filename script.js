@@ -476,9 +476,11 @@ const handlers = {
         const deltaX = state.touchStartX - touchX;
         const deltaY = state.touchStartY - touchY;
 
+        // Only handle horizontal scrolling if the swipe is more horizontal than vertical
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault(); // Prevent vertical scroll during horizontal swipe
-            elements.tableContainer.scrollLeft += deltaX;
+            // Reduce scroll speed by scaling deltaX (0.5 for slower scrolling)
+            elements.tableContainer.scrollLeft += deltaX * 0.5;
         }
     }
 };
