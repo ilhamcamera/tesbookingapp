@@ -1,15 +1,14 @@
 :root {
-    --primary-color: #9F3133; /* New primary color (deep red) */
+    --primary-color: #1428A0; /* Samsung One UI blue */
     --secondary-color: #F5F6F5; /* Light gray background */
-    --available-color: #FCE4E4; /* Light red for available (softer tone) */
-    --booked-color: #6D1F20; /* Dark red for booked */
+    --available-color: #E8F0FE; /* Light blue for available */
+    --booked-color: #FFEBEE; /* Light red for booked */
     --weekend-color: #F1F1F1; /* Light gray for weekends */
     --text-dark: #000000; /* Black text */
     --text-light: #FFFFFF; /* White text */
     --border-color: #E0E0E0; /* Light border */
-    --success-color: #2E7D32; /* Green for success (retained, no blue) */
-    --danger-color: #D32F2F; /* Red for errors (darker red to match theme) */
-    --hover-color: #E6B8B9; /* Light red hover effect */
+    --success-color: #34C759; /* Green for success */
+    --danger-color: #FF3B30; /* Red for errors */
 }
 
 body {
@@ -79,7 +78,7 @@ body {
 }
 
 .btn-icon:hover {
-    background-color: var(--hover-color);
+    background-color: rgba(20, 40, 160, 0.1);
     border-radius: 50%;
 }
 
@@ -106,13 +105,6 @@ body {
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x pan-y;
     scroll-behavior: smooth;
-    /* Hide scrollbars */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-}
-
-.table-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
 }
 
 .booking-matrix {
@@ -182,7 +174,7 @@ body {
 
 .date-cell.booked {
     background-color: var(--booked-color);
-    color: var(--text-light);
+    color: var(--danger-color);
 }
 
 .date-cell.weekend {
@@ -207,7 +199,7 @@ body {
 }
 
 .date-cell:hover {
-    background-color: var(--hover-color);
+    background-color: rgba(20, 40, 160, 0.1);
 }
 
 .description {
@@ -229,7 +221,7 @@ body {
 }
 
 .booked .description {
-    color: var(--text-light);
+    color: var(--danger-color);
 }
 
 .app-footer {
@@ -303,7 +295,7 @@ body {
 
 .form-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(159, 49, 51, 0.1);
+    box-shadow: 0 0 0 0.2rem rgba(20, 40, 160, 0.1);
 }
 
 .legend {
@@ -371,7 +363,7 @@ body {
 
 .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(159, 49, 51, 0.1);
+    box-shadow: 0 0 0 0.2rem rgba(20, 40, 160, 0.1);
 }
 
 .form-check {
@@ -405,6 +397,25 @@ body {
 .spinner-border {
     width: 2.5rem;
     height: 2.5rem;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #B0B0B0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #909090;
 }
 
 @keyframes slideIn {
