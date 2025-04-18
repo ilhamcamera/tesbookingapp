@@ -219,9 +219,7 @@ const core = {
             filteredUnits = filteredUnits.filter(unit => unit.category === selectedCategory);
         }
         
-        if (selectedUnitDisplayName &&
-
- selectedUnitDisplayName !== 'all') {
+        if (selectedUnitDisplayName && selectedUnitDisplayName !== 'all') {
             filteredUnits = filteredUnits.filter(unit => unit.displayName === selectedUnitDisplayName);
         }
         
@@ -323,10 +321,10 @@ const core = {
             return;
         }
         
+        // Simpan posisi scroll
         state.scrollPosition = window.scrollY || window.pageYOffset;
         
-        const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
-        
+        // Mempersiapkan data untuk modal
         document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
         document.getElementById('displayUnit').textContent = unit;
@@ -350,6 +348,8 @@ const core = {
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
         
+        // Tampilkan modal
+        const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
     },
 
@@ -421,7 +421,9 @@ Mohon konfirmasi ketersediaannya. Terima kasih.`;
     window.open(whatsappLink, '_blank');
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    modal.hide();
+    if (modal) {
+        modal.hide();
+    }
 });
 
 // Event Handlers
@@ -485,8 +487,6 @@ const handlers = {
 
 // Initialize Application
 const init = async () => {
-    state.bookingModal = new bootstrap.Modal(elements.bookingModalElem);
-    
     const now = new Date();
     state.currentMonth = now.getMonth();
     state.currentYear = now.getFullYear();
@@ -517,17 +517,23 @@ const init = async () => {
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
-    elements.bookingModalElem.addEventListener('show.bs.modal', () => {
-        state.scrollPosition = window.scrollY || window.pageYOffset;
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${state.scrollPosition}px`;
-        document.body.style.width = '100%';
-    });
-    
-    elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
+    // Perbaikan untuk modal booking
+    elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
+        // Pastikan modal dapat di-scroll dan form dapat diisi
+        document.querySelector('.modal-dialog').style.overflowY = 'auto';
+        document.querySelector('.modal-content').style.position = 'relative';
+        document.querySelector('.modal-content').style.transform = 'none';
+        
+        // Hapus pengaturan posisi tetap dari body
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
+        document.body.style.height = '';
+        document.body.style.overflow = '';
+    });
+    
+    // Atur ulang saat modal ditutup
+    elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
         window.scrollTo(0, state.scrollPosition || 0);
     });
     
