@@ -244,7 +244,7 @@ const core = {
                 const cell = document.createElement('td');
                 cell.classList.add('date-cell');
                 if (utils.isWeekend(date)) cell.classList.add('weekend');
-                if (utils.isToday(date)) cell.classList.add('today');
+                if (utils.isToday(date)) th.classList.add('today');
                 
                 cell.style.minWidth = `${cellWidth}px`;
                 cell.classList.remove('available', 'booked');
@@ -479,8 +479,8 @@ const handlers = {
         // Only handle horizontal scrolling if the swipe is more horizontal than vertical
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault(); // Prevent vertical scroll during horizontal swipe
-            // Reduce scroll speed by scaling deltaX (0.5 for slower scrolling)
-            elements.tableContainer.scrollLeft += deltaX * 0.5;
+            // Increase scroll speed by scaling deltaX to 0.8 (from 0.5) for faster, smoother scrolling
+            elements.tableContainer.scrollLeft += deltaX * 0.8;
         }
     }
 };
