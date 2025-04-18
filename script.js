@@ -480,7 +480,7 @@ const handlers = {
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault();
-            elements.tableContainer.scrollLeft += deltaX * 0.5;
+            elements.tableContainer.scrollLeft += deltaX * 1;
         }
     }
 };
