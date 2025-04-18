@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #800000; /* Maroon red */
+    --primary-color: #9F3133; /* Merah maroon sesuai gambar */
     --secondary-color: #F5F6F5; /* Light gray background */
-    --available-color: #E8F0FE; /* Light blue for available */
-    --booked-color: #FF6666; /* Slightly darker red for booked */
+    --available-color: #E8F0FE; /* Light blue untuk tersedia */
+    --booked-color: #FFEBEE; /* Light red untuk terbooking */
     --text-dark: #000000; /* Black text */
     --text-light: #FFFFFF; /* White text */
     --border-color: #E0E0E0; /* Light border */
-    --success-color: #34C759; /* Green for success */
-    --danger-color: #FF3B30; /* Red for errors */
+    --success-color: #34C759; /* Green untuk success */
+    --danger-color: #FF3B30; /* Red untuk errors */
 }
 
 body {
@@ -19,10 +19,6 @@ body {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1504707748692-419802cf939d') no-repeat center center fixed;
     background-size: cover;
     overscroll-behavior: none;
-    -webkit-user-select: none;
-    user-select: none;
-    touch-action: manipulation;
-    transition: all 0.3s ease;
 }
 
 .app-wrapper {
@@ -30,7 +26,6 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(5px);
 }
 
 .container {
@@ -39,17 +34,11 @@ body {
     -webkit-overflow-scrolling: touch;
     margin: 0;
     padding: 16px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
+    background-color: var(--text-light);
     display: flex;
     flex-direction: column;
+    border-radius: 15px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .header {
@@ -60,12 +49,6 @@ body {
     margin-bottom: 8px;
     background: var(--primary-color);
     border-radius: 10px;
-    animation: slideInFromTop 0.5s ease-out;
-}
-
-@keyframes slideInFromTop {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }
 
 .header h1 {
@@ -75,7 +58,6 @@ body {
     margin: 0;
     display: flex;
     align-items: center;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-actions {
@@ -84,7 +66,7 @@ body {
 }
 
 .btn-icon {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--text-light);
     border: none;
     padding: 8px;
     font-size: 1.2rem;
@@ -94,25 +76,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .calendar-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 8px 16px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--text-light);
     border-radius: 10px;
-    animation: slideInFromTop 0.7s ease-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .month-year {
@@ -130,9 +110,6 @@ body {
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x pan-y;
     scroll-behavior: smooth;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    animation: fadeIn 0.7s ease-in;
 }
 
 .booking-matrix {
@@ -146,14 +123,13 @@ body {
     border: 1px solid var(--border-color);
     padding: 4px;
     text-align: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .booking-matrix thead th {
     position: sticky;
     top: 0;
     z-index: 25;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--text-light);
     color: var(--text-dark);
     font-weight: 500;
 }
@@ -162,7 +138,7 @@ body {
     position: sticky;
     left: 0;
     z-index: 40;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--text-light);
     color: var(--text-dark);
 }
 
@@ -177,13 +153,13 @@ body {
     position: sticky;
     left: 0;
     z-index: 30;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--text-light);
     color: var(--text-dark);
     font-weight: 500;
 }
 
 .unit-cell {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--text-light);
     z-index: 20;
 }
 
@@ -194,7 +170,6 @@ body {
     font-size: 0.75rem;
     position: relative;
     touch-action: pan-x pan-y;
-    transition: transform 0.2s ease;
 }
 
 .date-cell.available {
@@ -204,7 +179,7 @@ body {
 
 .date-cell.booked {
     background-color: var(--booked-color);
-    color: var(--text-light);
+    color: var(--danger-color);
 }
 
 .date-cell.today {
@@ -221,12 +196,10 @@ body {
     width: 20px;
     height: 2px;
     background-color: var(--primary-color);
-    border-radius: 2px;
 }
 
 .date-cell:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(159, 49, 51, 0.1);
 }
 
 .description {
@@ -248,24 +221,7 @@ body {
 }
 
 .booked .description {
-    color: var(--text-dark);
-}
-
-.app-footer {
-    text-align: center;
-    padding: 8px 16px;
-    font-size: 0.8rem;
-    color: var(--text-dark);
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 0 0 10px 10px;
-    border-top: 1px solid var(--border-color);
-    z-index: 10;
-    animation: slideInFromBottom 0.5s ease-out;
-}
-
-@keyframes slideInFromBottom {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    color: var(--danger-color);
 }
 
 .filter-panel {
@@ -274,12 +230,11 @@ body {
     right: -100%;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--text-light);
     z-index: 1000;
     transition: right 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(10px);
 }
 
 .filter-panel.open {
@@ -291,9 +246,9 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--primary-color);
+    background-color: var(--primary-color);
     color: var(--text-light);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .filter-header h2 {
@@ -307,12 +262,19 @@ body {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 60px;
+}
+
+.filter-footer {
+    padding: 12px 16px;
+    background-color: var(--text-light);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    border-top: 1px solid var(--border-color);
 }
 
 .filter-group {
     margin-bottom: 16px;
-    animation: fadeIn 0.5s ease-in;
 }
 
 .filter-group label {
@@ -325,15 +287,15 @@ body {
 .form-select {
     font-size: 0.9rem;
     padding: 12px;
-    border-radius: 8px;
     border: 1px solid var(--border-color);
     height: 48px;
-    transition: all 0.3s ease;
+    background-color: var(--text-light);
+    color: var(--text-dark);
 }
 
 .form-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.2);
+    box-shadow: 0 0 0 0.2rem rgba(159, 49, 51, 0.1);
 }
 
 .legend {
@@ -348,18 +310,11 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 0.85rem;
-    animation: slideInFromLeft 0.5s ease-out;
-}
-
-@keyframes slideInFromLeft {
-    from { transform: translateX(-20px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
 }
 
 .legend-color {
     width: 16px;
     height: 16px;
-    border-radius: 4px;
     border: 1px solid var(--border-color);
 }
 
@@ -372,17 +327,17 @@ body {
 }
 
 .modal {
-    z-index: 1055; /* Lebih tinggi dari filter-panel dan loading */
+    z-index: 1060;
 }
 
 .modal-backdrop {
-    z-index: 1050; /* Di bawah modal */
+    z-index: 1055;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-    border-radius: 15px;
-    background: #ffffff; /* Putih solid */
-    backdrop-filter: none; /* Hapus efek buram */
+    background-color: var(--text-light);
+    border-radius: 8px;
     height: 100%;
     overflow: hidden;
 }
@@ -391,14 +346,14 @@ body {
     background-color: var(--primary-color);
     color: var(--text-light);
     padding: 16px;
-    border-radius: 15px 15px 0 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .modal-body {
     padding: 16px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    max-height: calc(100vh - 150px); /* Batasi tinggi */
+    max-height: calc(100vh - 150px);
     scrollbar-width: thin;
 }
 
@@ -408,61 +363,53 @@ body {
 
 .modal-body::-webkit-scrollbar-track {
     background: var(--secondary-color);
-    border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
     background: var(--primary-color);
-    border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-    background: #600000;
+    background: #7a2526;
 }
 
 .modal-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border-color);
-    background: #ffffff;
-    border-radius: 0 0 15px 15px;
+    background-color: var(--text-light);
 }
 
 .form-control,
 .form-control-plaintext {
     font-size: 0.9rem;
     padding: 12px;
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
     height: 48px;
-    transition: all 0.3s ease;
 }
 
 .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.2);
+    box-shadow: 0 0 0 0.2rem rgba(159, 49, 51, 0.1);
 }
 
 .modal input,
 .modal textarea,
-.modal select {
+.modal select,
+.modal .form-check-input {
     user-select: auto;
     -webkit-user-select: auto;
     pointer-events: auto;
+    touch-action: auto;
 }
 
 .form-check {
     margin-bottom: 12px;
-    animation: fadeIn 0.5s ease-in;
 }
 
 .form-check-input {
     width: 20px;
     height: 20px;
     margin-right: 8px;
-    transition: transform 0.2s ease;
-}
-
-.form-check-input:checked {
-    transform: scale(1.2);
 }
 
 .form-check-label {
@@ -481,18 +428,11 @@ body {
     align-items: center;
     color: var(--text-light);
     z-index: 1050;
-    animation: fadeIn 0.3s ease-in;
 }
 
 .spinner-border {
     width: 2.5rem;
     height: 2.5rem;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 ::-webkit-scrollbar {
@@ -502,16 +442,14 @@ body {
 
 ::-webkit-scrollbar-track {
     background: var(--secondary-color);
-    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
+    background: #B0B0B0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #600000;
+    background: #909090;
 }
 
 @keyframes slideIn {
@@ -544,7 +482,6 @@ body {
 @media (max-width: 576px) {
     .container {
         padding: 12px;
-        border-radius: 10px;
     }
 
     .header h1 {
@@ -557,7 +494,6 @@ body {
 
     .btn-icon {
         font-size: 1.1rem;
-        border-radius: 8px;
     }
 
     .unit-header,
@@ -574,31 +510,7 @@ body {
         font-size: 0.7rem;
     }
 
-    .app-footer {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-        border-radius: 0 0 8px 8px;
-    }
-
     .modal-content {
-        border-radius: 10px;
-    }
-
-    .form-control,
-    .form-select {
-        font-size: 0.85rem;
-        height: 44px;
-    }
-}
-
-@media (min-width: 768px) {
-    .container {
-        max-width: 720px;
-        margin: 20px auto;
-    }
-
-    .filter-panel {
-        width: 400px;
-        border-radius: 15px 0 0 15px;
+        border-radius: 0;
     }
 }

@@ -63,8 +63,6 @@ const utils = {
         });
     },
 
-    isWeekend: (date) => [0, 6].includes(date.getDay()),
-
     isToday: (date) => {
         const today = new Date();
         return date.getDate() === today.getDate() && 
@@ -321,11 +319,9 @@ const core = {
             return;
         }
         
-        console.log('Opening modal for unit:', unit, 'date:', dateStr); // Debugging
+        console.log('Opening modal for unit:', unit, 'date:', dateStr);
         
         state.scrollPosition = window.scrollY || window.pageYOffset;
-        
-        const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
         
         document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
@@ -350,8 +346,9 @@ const core = {
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
         
+        const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
-        console.log('Modal shown'); // Debugging
+        console.log('Modal shown');
     },
 
     toggleFilterPanel: () => {
@@ -424,7 +421,9 @@ Mohon konfirmasi ketersediaannya. Terima kasih.`;
     window.open(whatsappLink, '_blank');
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    modal.hide();
+    if (modal) {
+        modal.hide();
+    }
 });
 
 // Event Handlers
@@ -488,8 +487,6 @@ const handlers = {
 
 // Initialize Application
 const init = async () => {
-    state.bookingModal = new bootstrap.Modal(elements.bookingModalElem);
-    
     const now = new Date();
     state.currentMonth = now.getMonth();
     state.currentYear = now.getFullYear();
@@ -521,6 +518,7 @@ const init = async () => {
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
     elements.bookingModalElem.addEventListener('show.bs.modal', () => {
+        console.log('Modal is showing');
         state.scrollPosition = window.scrollY || window.pageYOffset;
         document.body.style.position = 'fixed';
         document.body.style.top = `-${state.scrollPosition}px`;
@@ -528,7 +526,14 @@ const init = async () => {
         document.body.style.overflow = 'hidden';
     });
     
+    elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
+        console.log('Modal fully shown');
+        const firstInput = document.getElementById('pickupTime');
+        if (firstInput) firstInput.focus();
+    });
+    
     elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
+        console.log('Modal hidden');
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';

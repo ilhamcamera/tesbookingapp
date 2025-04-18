@@ -51,156 +51,156 @@
                     <tbody id="matrixBody"></tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- Filter Panel -->
-        <div class="filter-panel" id="filterPanel">
-            <div class="filter-header">
-                <h2>Filter</h2>
-                <button id="closeFilterBtn" class="btn btn-icon">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="filter-content">
-                <div class="filter-group">
-                    <label for="filterCategory" class="form-label">Kategori:</label>
-                    <select id="filterCategory" class="form-select">
-                        <option value="Semua">Semua</option>
-                    </select>
+            <!-- Filter Panel -->
+            <div class="filter-panel" id="filterPanel">
+                <div class="filter-header">
+                    <h2>Filter</h2>
+                    <button id="closeFilterBtn" class="btn btn-icon">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="filter-group">
-                    <label for="filterUnit" class="form-label">Barang:</label>
-                    <select id="filterUnit" class="form-select">
-                        <option value="all" data-display-name="all">Semua Barang</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="filterStatus" class="form-label">Status:</label>
-                    <select id="filterStatus" class="form-select">
-                        <option value="all">Semua</option>
-                        <option value="booked">Terbooking</option>
-                        <option value="available">Tersedia</option>
-                    </select>
-                </div>
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color available-legend"></div>
-                        <span>Tersedia</span>
+                <div class="filter-content">
+                    <div class="filter-group">
+                        <label for="filterCategory" class="form-label">Kategori:</label>
+                        <select id="filterCategory" class="form-select">
+                            <option value="Semua">Semua</option>
+                        </select>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color booked-legend"></div>
-                        <span>Terbooking</span>
+                    <div class="filter-group">
+                        <label for="filterUnit" class="form-label">Barang:</label>
+                        <select id="filterUnit" class="form-select">
+                            <option value="all" data-display-name="all">Semua Barang</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStatus" class="form-label">Status:</label>
+                        <select id="filterStatus" class="form-select">
+                            <option value="all">Semua</option>
+                            <option value="booked">Terbooking</option>
+                            <option value="available">Tersedia</option>
+                        </select>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color available-legend"></div>
+                            <span>Tersedia</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color booked-legend"></div>
+                            <span>Terbooking</span>
+                        </div>
                     </div>
                 </div>
+                <div class="filter-footer">
+                    Ilhamcamera & Sewaikameraiphone BookingApp
+                </div>
             </div>
-            <footer class="app-footer">
-                Ilhamcamera & Sewaikameraiphone BookingApp
-            </footer>
-        </div>
 
-        <!-- Modal Booking -->
-        <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen-sm-down">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Form Penyewaan</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="bookingForm">
-                            <input type="hidden" id="selectedUnit">
-                            <input type="hidden" id="selectedDate">
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Barang:</label>
-                                <div id="displayUnit" class="form-control-plaintext fw-bold"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Tanggal Sewa:</label>
-                                <div id="displayDate" class="form-control-plaintext fw-bold"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="pickupTime" class="form-label">Jam Pengambilan:</label>
-                                <input type="time" class="form-control" id="pickupTime" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="returnDate" class="form-label">Tanggal Pengembalian:</label>
-                                <input type="date" class="form-control" id="returnDate" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="returnTime" class="form-label">Jam Pengembalian:</label>
-                                <input type="time" class="form-control" id="returnTime" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="customerName" class="form-label">Nama Lengkap *</label>
-                                <input type="text" class="form-control" id="customerName" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="customerPhone" class="form-label">Nomor Telepon *</label>
-                                <input type="tel" class="form-control" id="customerPhone" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="customerAddress" class="form-label">Alamat Lengkap *</label>
-                                <textarea class="form-control" id="customerAddress" rows="3" required></textarea>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Dokumen Jaminan (Pilih minimal 3):</label>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="documents" value="KTP" id="docKTP">
-                                            <label class="form-check-label" for="docKTP">KTP</label>
+            <!-- Modal Booking -->
+            <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen-sm-down">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Form Penyewaan</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="bookingForm">
+                                <input type="hidden" id="selectedUnit">
+                                <input type="hidden" id="selectedDate">
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Barang:</label>
+                                    <div id="displayUnit" class="form-control-plaintext fw-bold"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Tanggal Sewa:</label>
+                                    <div id="displayDate" class="form-control-plaintext fw-bold"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="pickupTime" class="form-label">Jam Pengambilan:</label>
+                                    <input type="time" class="form-control" id="pickupTime" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="returnDate" class="form-label">Tanggal Pengembalian:</label>
+                                    <input type="date" class="form-control" id="returnDate" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="returnTime" class="form-label">Jam Pengembalian:</label>
+                                    <input type="time" class="form-control" id="returnTime" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="customerName" class="form-label">Nama Lengkap *</label>
+                                    <input type="text" class="form-control" id="customerName" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="customerPhone" class="form-label">Nomor Telepon *</label>
+                                    <input type="tel" class="form-control" id="customerPhone" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="customerAddress" class="form-label">Alamat Lengkap *</label>
+                                    <textarea class="form-control" id="customerAddress" rows="3" required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Dokumen Jaminan (Pilih minimal 3):</label>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="documents" value="KTP" id="docKTP">
+                                                <label class="form-check-label" for="docKTP">KTP</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="documents" value="KK" id="docKK">
+                                                <label class="form-check-label" for="docKK">Kartu Keluarga</label>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="documents" value="KK" id="docKK">
-                                            <label class="form-check-label" for="docKK">Kartu Keluarga</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="documents" value="SIM" id="docSIM">
-                                            <label class="form-check-label" for="docSIM">SIM</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="documents" value="STNK" id="docSTNK">
-                                            <label class="form-check-label" for="docSTNK">STNK</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="documents" value="IJAZAH" id="docIJAZAH">
-                                            <label class="form-check-label" for="docIJAZAH">IJAZAH</label>
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="documents" value="SIM" id="docSIM">
+                                                <label class="form-check-label" for="docSIM">SIM</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="documents" value="STNK" id="docSTNK">
+                                                <label class="form-check-label" for="docSTNK">STNK</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="documents" value="IJAZAH" id="docIJAZAH">
+                                                <label class="form-check-label" for="docIJAZAH">IJAZAH</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="alert alert-danger" id="documentsError" style="display:none;">
-                                Harap pilih minimal 3 dokumen jaminan
-                            </div>
-                            
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-2"></i> Batal
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane me-2"></i> Kirim
-                                </button>
-                            </div>
-                        </form>
+                                
+                                <div class="alert alert-danger" id="documentsError" style="display:none;">
+                                    Harap pilih minimal 3 dokumen jaminan
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i> Kirim
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="script.js"></script>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
