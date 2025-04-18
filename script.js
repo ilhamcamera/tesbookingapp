@@ -192,7 +192,6 @@ const core = {
             
             const th = document.createElement('th');
             th.classList.add('date-header');
-            if (utils.isWeekend(date)) th.classList.add('weekend');
             if (utils.isToday(date)) th.classList.add('today');
             
             th.textContent = day;
@@ -220,7 +219,9 @@ const core = {
             filteredUnits = filteredUnits.filter(unit => unit.category === selectedCategory);
         }
         
-        if (selectedUnitDisplayName && selectedUnitDisplayName !== 'all') {
+        if (selectedUnitDisplayName &&
+
+ selectedUnitDisplayName !== 'all') {
             filteredUnits = filteredUnits.filter(unit => unit.displayName === selectedUnitDisplayName);
         }
         
@@ -243,7 +244,6 @@ const core = {
                 
                 const cell = document.createElement('td');
                 cell.classList.add('date-cell');
-                if (utils.isWeekend(date)) cell.classList.add('weekend');
                 if (utils.isToday(date)) cell.classList.add('today');
                 
                 cell.style.minWidth = `${cellWidth}px`;
@@ -476,10 +476,8 @@ const handlers = {
         const deltaX = state.touchStartX - touchX;
         const deltaY = state.touchStartY - touchY;
 
-        // Only handle horizontal scrolling if the swipe is more horizontal than vertical
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            e.preventDefault(); // Prevent vertical scroll during horizontal swipe
-            // Reduce scroll speed by scaling deltaX (0.5 for slower scrolling)
+            e.preventDefault();
             elements.tableContainer.scrollLeft += deltaX * 0.5;
         }
     }
