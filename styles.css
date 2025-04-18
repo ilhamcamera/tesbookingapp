@@ -116,7 +116,7 @@ body {
 }
 
 .month-year {
-    font-size: 1.3rem;
+    font-size:1.3rem;
     font-weight: 500;
     color: var(--text-dark);
     text-align: center;
@@ -372,11 +372,12 @@ body {
 }
 
 .modal {
-    z-index: 1055; /* Lebih tinggi dari filter-panel dan loading */
+    z-index: 1060; /* Lebih tinggi dari filter-panel dan loading */
 }
 
 .modal-backdrop {
     z-index: 1050; /* Di bawah modal */
+    opacity: 0.5 !important; /* Mengurangi kegelapan backdrop */
 }
 
 .modal-content {
@@ -384,6 +385,7 @@ body {
     background: #ffffff; /* Putih solid */
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 .modal-header {
@@ -443,9 +445,9 @@ body {
 .modal input,
 .modal textarea,
 .modal select {
-    user-select: auto;
-    -webkit-user-select: auto;
-    pointer-events: auto;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    pointer-events: auto !important;
 }
 
 .form-check {
