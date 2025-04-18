@@ -83,8 +83,8 @@ const utils = {
     calculateCellWidth: () => {
         const containerWidth = document.querySelector('.container').clientWidth;
         const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
-        const unitColumnWidth = 100;
-        const minCellWidth = 40;
+        const unitColumnWidth = 120; // Updated to match CSS
+        const minCellWidth = 48; // Updated to match CSS
         const availableWidth = containerWidth - unitColumnWidth - 20;
         return Math.max(minCellWidth, Math.floor(availableWidth / daysInMonth));
     },
@@ -94,45 +94,7 @@ const utils = {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         return selectedDate < today;
-    }
-};
-
-// Core Functions
-const core = {
-    loadUnits: async () => {
-        try {
-            const response = await fetch(CONFIG.unitsJsonPath);
-            if (!response.ok) throw new Error('Failed to load units.json');
-            
-            const data = await response.json();
-            
-            const nameCount = {};
-            const processedUnits = [];
-            
-            data.units.forEach(unit => {
-                nameCount[unit.name] = (nameCount[unit.name] || 0) + 1;
-            });
-            
-            const nameIndex = {};
-            data.units.forEach(unit => {
-                let displayName = unit.name;
-                if (nameCount[unit.name] > 1) {
-                    nameIndex[unit.name] = (nameIndex[unit.name] || 0) + 1;
-                    displayName = `${unit.name} (${nameIndex[unit.name]})`;
-                }
-                
-                processedUnits.push({
-                    originalName: unit.name,
-                    displayName: displayName,
-                    category: unit.category
-                });
-            });
-            
-            state.units = processedUnits;
-            state.categories = data.categories;
-            return { units: state.units, categories: state.categories };
-        } catch (error) {
-            console.error('Error loading units:', error);
+ස්‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍stry 'Failed to load units:', error);
             throw error;
         }
     },
@@ -475,7 +437,9 @@ const handlers = {
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault();
-            elements.tableContainer.scrollLeft += deltaX * 0.5;
+            elements.tableContainer.scrollLeft += deltaX * 0.8; // Smoother scrolling
+        } else {
+            elements.tableContainer.scrollTop += deltaY * 0.8;
         }
     }
 };
