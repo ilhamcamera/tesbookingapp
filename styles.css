@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #9F3133; /* Merah maroon sesuai gambar */
-    --secondary-color: #F5F6F5; /* Light gray background */
-    --available-color: #E8F0FE; /* Light blue untuk tersedia */
-    --booked-color: #FFEBEE; /* Light red untuk terbooking */
-    --text-dark: #000000; /* Black text */
-    --text-light: #FFFFFF; /* White text */
-    --border-color: #E0E0E0; /* Light border */
-    --success-color: #34C759; /* Green untuk success */
-    --danger-color: #FF3B30; /* Red untuk errors */
+    --primary-color: #9F3133;
+    --secondary-color: #F5F6F5;
+    --available-color: #E8F0FE;
+    --booked-color: #FFEBEE;
+    --text-dark: #000000;
+    --text-light: #FFFFFF;
+    --border-color: #E0E0E0;
+    --success-color: #34C759;
+    --danger-color: #FF3B30;
 }
 
 body {
@@ -16,7 +16,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     color: var(--text-dark);
     line-height: 1.6;
-    background-color: var(--secondary-color); /* Warna solid untuk menghindari masalah rendering */
+    background-color: var(--secondary-color);
     overscroll-behavior: none;
 }
 
@@ -226,18 +226,19 @@ body {
 .filter-panel {
     position: fixed;
     top: 0;
-    right: -100%;
+    transform: translateX(100%); /* Ganti dari right: -100% */
     width: 100%;
     height: 100%;
     background-color: var(--text-light);
     z-index: 1000;
-    transition: right 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out; /* Ganti dari right ke transform */
     display: flex;
     flex-direction: column;
+    will-change: transform; /* Optimasi performa */
 }
 
 .filter-panel.open {
-    right: 0;
+    transform: translateX(0); /* Ganti dari right: 0 */
 }
 
 .filter-header {
@@ -331,8 +332,9 @@ body {
 
 .modal-backdrop {
     z-index: 1055;
-    background-color: rgba(255, 255, 255, 0.3); /* Ubah dari hitam ke putih semi-transparan */
+    background-color: transparent; /* Hapus backdrop */
 }
+
 /* iOS-specific styles to ensure modal is responsive */
 @media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
     body.modal-open {
@@ -352,7 +354,7 @@ body {
     }
 
     .modal-backdrop {
-        background-color: rgba(255, 255, 255, 0.3); /* Konsisten dengan backdrop utama */
+        background-color: transparent; /* Hapus backdrop */
         -webkit-backdrop-filter: none;
         pointer-events: none; /* Allow clicks to pass through */
         z-index: 1050;
@@ -516,21 +518,24 @@ body {
 }
 
 @keyframes slideIn {
-    from { right: -100%; }
-    to { right: 0; }
+    from { transform: translateX(100%); } /* Ganti dari right */
+    to { transform: translateX(0); }
 }
 
 @keyframes slideOut {
-    from { right: 0; }
-    to { right: -100%; }
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
 }
 
+/* Hapus animation, pakai transition saja */
 .filter-panel.open {
-    animation: slideIn 0.3s ease-out forwards;
+    /* animation: slideIn 0.3s ease-out forwards; */ /* Dihapus */
+    transform: translateX(0); /* Cukup set posisi */
 }
 
 .filter-panel:not(.open) {
-    animation: slideOut 0.3s ease-out forwards;
+    /* animation: slideOut 0.3s ease-out forwards; */ /* Dihapus */
+    transform: translateX(100%);
 }
 
 @keyframes slideUp {
