@@ -13,7 +13,6 @@ const state = {
     selectedDate: null,
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
-    bookingModal: null,
     filterPanelOpen: false,
     scrollPosition: 0,
     touchStartX: 0,
@@ -32,7 +31,7 @@ const elements = {
     filterBtn: document.getElementById('filterBtn'),
     filterPanel: document.getElementById('filterPanel'),
     closeFilterBtn: document.getElementById('closeFilterBtn'),
-    bookingModalElem: document.getElementById('bookingModal'),
+    bookingModal: document.getElementById('bookingModal'),
     filterStatus: document.getElementById('filterStatus'),
     filterUnit: document.getElementById('filterUnit'),
     filterCategory: document.getElementById('filterCategory'),
@@ -139,9 +138,9 @@ const core = {
 
     loadBookingData: async () => {
         if (elements.loadingIndicator) {
-            elements.loadingIndicator.style.display = 'flex';
+            elements.loadingIndicator.classList.remove('hidden');
         }
-        elements.matrixBody.innerHTML = '<tr><td colspan="100%">Memuat data...</td></tr>';
+        elements.matrixBody.innerHTML = '<tr><td colspan="100%" class="p-4 text-center">Memuat data...</td></tr>';
         
         try {
             const timestamp = Date.now();
@@ -168,10 +167,10 @@ const core = {
             core.generateMatrix();
         } catch (error) {
             console.error('Error:', error);
-            elements.matrixBody.innerHTML = `<tr><td colspan="100%">Error: ${error.message}</td></tr>`;
+            elements.matrixBody.innerHTML = `<tr><td colspan="100%" class="p-4 text-center text-red-700">Error: ${error.message}</td></tr>`;
         } finally {
             if (elements.loadingIndicator) {
-                elements.loadingIndicator.style.display = 'none';
+                elements.loadingIndicator.classList.add('hidden');
             }
         }
     },
@@ -189,9 +188,7 @@ const core = {
             const dateStr = utils.formatDate(date);
             
             const th = document.createElement('th');
-            th.classList.add('date-header');
-            if (utils.isToday(date)) th.classList.add('today');
-            
+            th.className = `date-header bg-white sticky top-0 z-25 p-2 text-center font-medium border border-gray-300 ${utils.isToday(date) ? 'font-bold text-red-800' : ''}`;
             th.textContent = day;
             th.dataset.date = dateStr;
             th.style.minWidth = `${cellWidth}px`;
@@ -229,7 +226,7 @@ const core = {
             const row = document.createElement('tr');
             const unitCell = document.createElement('td');
             unitCell.textContent = unit.displayName;
-            unitCell.classList.add('unit-cell');
+            unitCell.className = 'unit-cell bg-white sticky left-0 z-30 p-2 font-medium border border-gray-300 min-w-[100px] max-w-[100px] break-words text-sm';
             row.appendChild(unitCell);
             
             const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
@@ -239,27 +236,23 @@ const core = {
                 const unitDateKey = `${unit.originalName}_${dateStr}`;
                 
                 const cell = document.createElement('td');
-                cell.classList.add('date-cell');
-                if (utils.isToday(date)) cell.classList.add('today');
-                
-                cell.style.minWidth = `${cellWidth}px`;
-                cell.classList.remove('available', 'booked');
+                cell.className = `date-cell border border-gray-300 p-1 text-center text-xs min-w-[${cellWidth}px] h-12 relative ${utils.isToday(date) ? 'font-bold text-red-800' : ''}`;
                 
                 const booking = state.bookingData[unitDateKey];
                 const description = booking?.description || '';
                 
                 if (booking && (selectedStatus === 'all' || booking.status === selectedStatus)) {
-                    cell.classList.add(booking.status);
+                    cell.className += ` ${booking.status === 'booked' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-green-600'}`;
                     if (description) {
                         cell.innerHTML = `
-                            <div class="description" title="${description}">${description}</div>
+                            <div class="description text-[0.65rem] break-words line-clamp-2 overflow-hidden" title="${description}">${description}</div>
                         `;
                     }
                 } else if (!booking && (selectedStatus === 'all' || selectedStatus === 'available')) {
-                    cell.classList.add('available');
+                    cell.className += ' bg-blue-50 text-green-600';
                     if (description) {
                         cell.innerHTML = `
-                            <div class="description" title="${description}">${description}</div>
+                            <div class="description text-[0.65rem] break-words line-clamp-2 overflow-hidden" title="${description}">${description}</div>
                         `;
                     }
                 }
@@ -267,11 +260,13 @@ const core = {
                 cell.dataset.unit = unit.originalName;
                 cell.dataset.date = dateStr;
                 
-                if (cell.classList.contains('available') && !utils.isPastDate(dateStr)) {
+                if (cell.classList.contains('bg-blue-50') && !utils.isPastDate(dateStr)) {
+                    cell.className += ' cursor-pointer hover:bg-red-100';
                     cell.addEventListener('click', () => core.openBookingModal(unit.originalName, dateStr));
-                    cell.style.cursor = 'pointer';
-                } else {
-                    cell.style.cursor = 'default';
+                }
+                
+                if (utils.isToday(date)) {
+                    cell.innerHTML += '<div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-5 h-0.5 bg-red-800"></div>';
                 }
                 
                 row.appendChild(cell);
@@ -344,65 +339,61 @@ const core = {
         document.getElementById('returnDate').value = utils.formatDate(returnDate);
         document.getElementById('pickupTime').value = '08:00';
         document.getElementById('returnTime').value = '17:00';
-        document.getElementById('documentsError').style.display = 'none';
+        document.getElementById('documentsError').classList.add('hidden');
         
-        const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
-        modal.show();
-        console.log('Modal shown');
-
-        // iOS-specific fix: Ensure modal is fully interactive
+        elements.bookingModal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${state.scrollPosition}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        
+        // iOS-specific fix
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             setTimeout(() => {
-                const backdrop = document.querySelector('.modal-backdrop');
-                const modalContent = document.querySelector('.modal-content');
-                const modalBody = document.querySelector('.modal-body');
+                const modalDialog = elements.bookingModal.querySelector('.modal-dialog');
+                const modalBody = elements.bookingModal.querySelector('.modal-body');
                 const inputs = modalBody.querySelectorAll('input, textarea, select, button');
-
-                if (backdrop) {
-                    backdrop.style.pointerEvents = 'none';
-                    backdrop.style.zIndex = '1050';
-                }
-                if (modalContent) {
-                    modalContent.style.pointerEvents = 'auto';
-                    modalContent.style.zIndex = '1075';
-                    modalContent.style.overflow = 'auto';
-                    modalContent.style.webkitOverflowScrolling = 'touch';
-                }
-                if (modalBody) {
-                    modalBody.style.overflow = 'auto';
-                    modalBody.style.webkitOverflowScrolling = 'touch';
-                    modalBody.style.touchAction = 'auto';
-                }
+                
+                modalDialog.style.transform = 'translateZ(0)';
+                modalDialog.style.webkitTransform = 'translateZ(0)';
+                modalDialog.style.overflow = 'auto';
+                modalDialog.style.webkitOverflowScrolling = 'touch';
+                
+                modalBody.style.touchAction = 'auto';
+                modalBody.style.overflow = 'auto';
+                modalBody.style.webkitOverflowScrolling = 'touch';
+                
                 inputs.forEach(input => {
                     input.style.pointerEvents = 'auto';
                     input.style.touchAction = 'manipulation';
                     input.style.webkitUserSelect = 'auto';
                     input.style.userSelect = 'auto';
                 });
-
-                // Force focus on first input
+                
                 const firstInput = document.getElementById('pickupTime');
-                if (firstInput) {
-                    firstInput.focus();
-                }
+                if (firstInput) firstInput.focus();
+                
+                modalDialog.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+                modalDialog.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
             }, 100);
-
-            // Add touch event listeners to ensure responsiveness
-            const modalDialog = document.querySelector('.modal-dialog');
-            if (modalDialog) {
-                modalDialog.addEventListener('touchstart', (e) => {
-                    e.stopPropagation();
-                }, { passive: true });
-                modalDialog.addEventListener('touchmove', (e) => {
-                    e.stopPropagation();
-                }, { passive: true });
-            }
         }
+    },
+
+    closeBookingModal: () => {
+        elements.bookingModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        window.scrollTo(0, state.scrollPosition || 0);
     },
 
     toggleFilterPanel: () => {
         state.filterPanelOpen = !state.filterPanelOpen;
         elements.filterPanel.classList.toggle('open', state.filterPanelOpen);
+        elements.filterPanel.classList.toggle('translate-x-full', !state.filterPanelOpen);
         if (state.filterPanelOpen) {
             state.scrollPosition = window.scrollY || window.pageYOffset;
             document.body.style.position = 'fixed';
@@ -431,7 +422,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     
     const documents = Array.from(document.querySelectorAll('input[name="documents"]:checked')).map(cb => cb.value);
     if (documents.length < 3) {
-        document.getElementById('documentsError').style.display = 'block';
+        document.getElementById('documentsError').classList.remove('hidden');
         return;
     }
     
@@ -468,11 +459,7 @@ Mohon konfirmasi ketersediaannya. Terima kasih.`;
     const whatsappLink = `https://wa.me/628999240196?text=${encodedMessage}`;
     
     window.open(whatsappLink, '_blank');
-    
-    const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    if (modal) {
-        modal.hide();
-    }
+    core.closeBookingModal();
 });
 
 // Event Handlers
@@ -498,7 +485,7 @@ const handlers = {
     onRefresh: async () => {
         try {
             if (elements.loadingIndicator) {
-                elements.loadingIndicator.style.display = 'flex';
+                elements.loadingIndicator.classList.remove('hidden');
             }
             await core.loadUnits();
             core.populateCategoryFilter();
@@ -506,7 +493,7 @@ const handlers = {
             await core.loadBookingData();
         } finally {
             if (elements.loadingIndicator) {
-                elements.loadingIndicator.style.display = 'none';
+                elements.loadingIndicator.classList.add('hidden');
             }
         }
     },
@@ -542,7 +529,7 @@ const init = async () => {
     
     try {
         if (elements.loadingIndicator) {
-            elements.loadingIndicator.style.display = 'flex';
+            elements.loadingIndicator.classList.remove('hidden');
         }
         await core.loadUnits();
         core.populateCategoryFilter();
@@ -550,10 +537,10 @@ const init = async () => {
         await core.loadBookingData();
     } catch (error) {
         console.error('Initialization error:', error);
-        elements.matrixBody.innerHTML = `<tr><td colspan="100%">Error: Gagal menginisialisasi aplikasi</td></tr>`;
+        elements.matrixBody.innerHTML = `<tr><td colspan="100%" class="p-4 text-center text-red-700">Error: Gagal menginisialisasi aplikasi</td></tr>`;
     } finally {
         if (elements.loadingIndicator) {
-            elements.loadingIndicator.style.display = 'none';
+            elements.loadingIndicator.classList.add('hidden');
         }
     }
     
@@ -566,30 +553,8 @@ const init = async () => {
     elements.filterCategory.addEventListener('change', handlers.onCategoryChange);
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
-    elements.bookingModalElem.addEventListener('show.bs.modal', () => {
-        console.log('Modal is showing');
-        state.scrollPosition = window.scrollY || window.pageYOffset;
-        document.body.classList.add('modal-open');
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${state.scrollPosition}px`;
-        document.body.style.width = '100%';
-        document.body.style.overflow = 'hidden';
-    });
-    
-    elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
-        console.log('Modal fully shown');
-        const firstInput = document.getElementById('pickupTime');
-        if (firstInput) firstInput.focus();
-    });
-    
-    elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
-        console.log('Modal hidden');
-        document.body.classList.remove('modal-open');
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
-        window.scrollTo(0, state.scrollPosition || 0);
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => {
+        btn.addEventListener('click', core.closeBookingModal);
     });
     
     elements.tableContainer.addEventListener('touchstart', handlers.onTouchStart);
