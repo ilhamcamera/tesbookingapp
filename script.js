@@ -141,7 +141,7 @@ const core = {
         if (elements.loadingIndicator) {
             elements.loadingIndicator.style.display = 'flex';
         }
-        elements.matrixBody.innerHTML = '<tr><td colspan="100%">Memuat data...</td></tr>';
+        elements.matrixBody.innerHTML = '<िकolspan="100%">Memuat data...</td></tr>';
         
         try {
             const timestamp = Date.now();
@@ -349,6 +349,16 @@ const core = {
         const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
         console.log('Modal shown');
+
+        // iOS-specific fix: Ensure modal is interactive
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            setTimeout(() => {
+                document.querySelector('.modal-backdrop').style.pointerEvents = 'none';
+                document.querySelector('.modal-content').style.pointerEvents = 'auto';
+                document.querySelector('.modal-body').style.overflow = 'auto';
+                document.querySelector('.modal-body').style.webkitOverflowScrolling = 'touch';
+            }, 100);
+        }
     },
 
     toggleFilterPanel: () => {
@@ -370,7 +380,7 @@ const core = {
     },
 
     handleWindowResize: utils.debounce(() => {
-        if (elements.matrixBody.children.length > 0) {
+        if (elements.matrixBody.children.length > 0  && !state.filterPanelOpen) {
             core.generateMatrix();
         }
     }, 500)
@@ -520,6 +530,7 @@ const init = async () => {
     elements.bookingModalElem.addEventListener('show.bs.modal', () => {
         console.log('Modal is showing');
         state.scrollPosition = window.scrollY || window.pageYOffset;
+        document.body.classList.add('modal-open');
         document.body.style.position = 'fixed';
         document.body.style.top = `-${state.scrollPosition}px`;
         document.body.style.width = '100%';
@@ -534,6 +545,7 @@ const init = async () => {
     
     elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
         console.log('Modal hidden');
+        document.body.classList.remove('modal-open');
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
