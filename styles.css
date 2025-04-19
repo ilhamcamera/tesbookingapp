@@ -335,6 +335,30 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* iOS-specific styles to fix dark modal issue */
+@media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.4); /* Slightly lighter backdrop for iOS */
+        -webkit-backdrop-filter: none; /* Disable backdrop filter to prevent darkening */
+    }
+
+    .modal {
+        -webkit-transform: translateZ(0); /* Force hardware acceleration */
+        transform: translateZ(0);
+    }
+
+    .modal-content {
+        -webkit-backface-visibility: hidden; /* Prevent rendering artifacts */
+        backface-visibility: hidden;
+        background-color: var(--text-light);
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+    }
+
+    .modal-body {
+        -webkit-overflow-scrolling: touch; /* Ensure smooth scrolling */
+    }
+}
+
 .modal-content {
     background-color: var(--text-light);
     border-radius: 8px;
