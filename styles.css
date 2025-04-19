@@ -533,6 +533,7 @@ body {
 
 .add-unit-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: center;
     margin-bottom: 12px;
@@ -540,6 +541,7 @@ body {
 
 .add-unit-container select {
     flex: 1;
+    min-width: 150px;
 }
 
 .no-units-message {
@@ -626,5 +628,9 @@ body {
 
     .modal-content {
         border-radius: 0;
+    }
+
+    .add-unit-container select {
+        min-width: 100%;
     }
 }

@@ -22,7 +22,7 @@
 
         <div class="container">
             <div class="header">
-                <h1><i class="fas fa-calendar-check me-2"></i>Ilhamcam BookingApp 1.1</h1>
+                <h1><i class="fas fa-calendar-check me-2"></i>Ilhamcam BookingApp 1.0</h1>
                 <div class="header-actions">
                     <button id="refreshBtn" class="btn btn-icon">
                         <i class="fas fa-sync-alt"></i>
@@ -113,10 +113,11 @@
                                     <label class="form-label">Barang yang Dipilih:</label>
                                     <ul class="selected-units-list" id="selectedUnitsList"></ul>
                                     <div class="add-unit-container">
-                                        <select id="addUnitSelect" class="form-select"></select>
+                                        <select id="addCategorySelect" class="form-select" title="Pilih Kategori"></select>
+                                        <select id="addUnitSelect" class="form-select" title="Pilih Barang"></select>
                                         <button type="button" class="btn btn-primary" id="addUnitBtn"><i class="fas fa-plus me-2"></i>Tambah</button>
                                     </div>
-                                    <div class="no-units-message" id="noUnitsMessage">Tidak ada barang tersedia untuk tanggal ini.</div>
+                                    <div class="no-units-message" id="noUnitsMessage">Tidak ada barang tersedia untuk kategori ini pada tanggal yang dipilih.</div>
                                 </div>
                                 
                                 <div class="mb-3">

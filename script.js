@@ -38,6 +38,7 @@ const elements = {
     filterCategory: document.getElementById('filterCategory'),
     tableContainer: document.querySelector('.table-container'),
     selectedUnitsList: document.getElementById('selectedUnitsList'),
+    addCategorySelect: document.getElementById('addCategorySelect'),
     addUnitSelect: document.getElementById('addUnitSelect'),
     addUnitBtn: document.getElementById('addUnitBtn'),
     unitsError: document.getElementById('unitsError'),
@@ -301,12 +302,25 @@ const core = {
             elements.filterUnit.appendChild(option);
         });
     },
-    populateAddUnitSelect: (excludeUnits = [], dateStr) => {
+    populateAddCategorySelect: () => {
+        elements.addCategorySelect.innerHTML = '<option value="">Pilih Kategori</option>';
+        state.categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            elements.addCategorySelect.appendChild(option);
+        });
+    },
+    populateAddUnitSelect: (excludeUnits = [], dateStr, selectedCategory = '') => {
         elements.addUnitSelect.innerHTML = '<option value="">Pilih Barang</option>';
         const availableUnits = state.units
             .filter(unit => {
                 const unitDateKey = `${unit.originalName}_${dateStr}`;
-                return !state.bookingData[unitDateKey] && !excludeUnits.includes(unit.originalName);
+                return (
+                    !state.bookingData[unitDateKey] &&
+                    !excludeUnits.includes(unit.originalName) &&
+                    (selectedCategory === '' || unit.category === selectedCategory)
+                );
             })
             .sort((a, b) => a.displayName.localeCompare(b.displayName));
         
@@ -317,9 +331,9 @@ const core = {
             elements.addUnitSelect.appendChild(option);
         });
         
-        elements.addUnitSelect.disabled = availableUnits.length === 0;
-        elements.addUnitBtn.disabled = availableUnits.length === 0;
-        elements.noUnitsMessage.style.display = availableUnits.length === 0 ? 'block' : 'none';
+        elements.addUnitSelect.disabled = availableUnits.length === 0 || !selectedCategory;
+        elements.addUnitBtn.disabled = availableUnits.length === 0 || !selectedCategory;
+        elements.noUnitsMessage.style.display = availableUnits.length === 0 && selectedCategory ? 'block' : 'none';
     },
     updateSelectedUnitsList: () => {
         elements.selectedUnitsList.innerHTML = '';
@@ -331,7 +345,7 @@ const core = {
             removeBtn.addEventListener('click', () => {
                 state.selectedUnits = state.selectedUnits.filter(u => u !== unit);
                 core.updateSelectedUnitsList();
-                core.populateAddUnitSelect(state.selectedUnits, state.selectedDate);
+                core.populateAddUnitSelect(state.selectedUnits, state.selectedDate, elements.addCategorySelect.value);
             });
             li.appendChild(removeBtn);
             elements.selectedUnitsList.appendChild(li);
@@ -371,8 +385,10 @@ const core = {
         document.getElementById('unitsError').style.display = 'none';
         elements.noUnitsMessage.style.display = 'none';
         
+        core.populateAddCategorySelect();
+        elements.addCategorySelect.value = '';
+        core.populateAddUnitSelect(state.selectedUnits, dateStr, '');
         core.updateSelectedUnitsList();
-        core.populateAddUnitSelect(state.selectedUnits, dateStr);
         
         const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
@@ -441,13 +457,18 @@ const core = {
     }, 500)
 };
 
+// Handle perubahan kategori
+elements.addCategorySelect.addEventListener('change', () => {
+    core.populateAddUnitSelect(state.selectedUnits, state.selectedDate, elements.addCategorySelect.value);
+});
+
 // Handle penambahan barang
 elements.addUnitBtn.addEventListener('click', () => {
     const selectedUnit = elements.addUnitSelect.value;
     if (selectedUnit && !state.selectedUnits.includes(selectedUnit)) {
         state.selectedUnits.push(selectedUnit);
         core.updateSelectedUnitsList();
-        core.populateAddUnitSelect(state.selectedUnits, state.selectedDate);
+        core.populateAddUnitSelect(state.selectedUnits, state.selectedDate, elements.addCategorySelect.value);
         elements.addUnitSelect.value = '';
     }
 });
