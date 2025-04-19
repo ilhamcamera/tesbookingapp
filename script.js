@@ -141,7 +141,7 @@ const core = {
         if (elements.loadingIndicator) {
             elements.loadingIndicator.style.display = 'flex';
         }
-        elements.matrixBody.innerHTML = '<िकolspan="100%">Memuat data...</td></tr>';
+        elements.matrixBody.innerHTML = '<tr><td colspan="100%">Memuat data...</td></tr>';
         
         try {
             const timestamp = Date.now();
@@ -350,14 +350,53 @@ const core = {
         modal.show();
         console.log('Modal shown');
 
-        // iOS-specific fix: Ensure modal is interactive
+        // iOS-specific fix: Ensure modal is fully interactive
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             setTimeout(() => {
-                document.querySelector('.modal-backdrop').style.pointerEvents = 'none';
-                document.querySelector('.modal-content').style.pointerEvents = 'auto';
-                document.querySelector('.modal-body').style.overflow = 'auto';
-                document.querySelector('.modal-body').style.webkitOverflowScrolling = 'touch';
+                const backdrop = document.querySelector('.modal-backdrop');
+                const modalContent = document.querySelector('.modal-content');
+                const modalBody = document.querySelector('.modal-body');
+                const inputs = modalBody.querySelectorAll('input, textarea, select, button');
+
+                if (backdrop) {
+                    backdrop.style.pointerEvents = 'none';
+                    backdrop.style.zIndex = '1050';
+                }
+                if (modalContent) {
+                    modalContent.style.pointerEvents = 'auto';
+                    modalContent.style.zIndex = '1075';
+                    modalContent.style.overflow = 'auto';
+                    modalContent.style.webkitOverflowScrolling = 'touch';
+                }
+                if (modalBody) {
+                    modalBody.style.overflow = 'auto';
+                    modalBody.style.webkitOverflowScrolling = 'touch';
+                    modalBody.style.touchAction = 'auto';
+                }
+                inputs.forEach(input => {
+                    input.style.pointerEvents = 'auto';
+                    input.style.touchAction = 'manipulation';
+                    input.style.webkitUserSelect = 'auto';
+                    input.style.userSelect = 'auto';
+                });
+
+                // Force focus on first input
+                const firstInput = document.getElementById('pickupTime');
+                if (firstInput) {
+                    firstInput.focus();
+                }
             }, 100);
+
+            // Add touch event listeners to ensure responsiveness
+            const modalDialog = document.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.addEventListener('touchstart', (e) => {
+                    e.stopPropagation();
+                }, { passive: true });
+                modalDialog.addEventListener('touchmove', (e) => {
+                    e.stopPropagation();
+                }, { passive: true });
+            }
         }
     },
 
@@ -380,7 +419,7 @@ const core = {
     },
 
     handleWindowResize: utils.debounce(() => {
-        if (elements.matrixBody.children.length > 0  && !state.filterPanelOpen) {
+        if (elements.matrixBody.children.length > 0 && !state.filterPanelOpen) {
             core.generateMatrix();
         }
     }, 500)

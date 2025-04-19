@@ -16,8 +16,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     color: var(--text-dark);
     line-height: 1.6;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1504707748692-419802cf939d') no-repeat center center fixed;
-    background-size: cover;
+    background-color: var(--secondary-color); /* Warna solid untuk menghindari masalah rendering */
     overscroll-behavior: none;
 }
 
@@ -335,7 +334,7 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* iOS-specific styles to fix unresponsive modal */
+/* iOS-specific styles to ensure modal is responsive */
 @media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
     body.modal-open {
         position: fixed;
@@ -343,43 +342,60 @@ body {
         height: 100%;
         overflow: hidden;
         -webkit-overflow-scrolling: touch;
+        touch-action: none; /* Prevent body scrolling */
     }
 
     .modal {
         -webkit-transform: translateZ(0); /* Force hardware acceleration */
         transform: translateZ(0);
-        touch-action: auto; /* Ensure touch events are not blocked */
+        touch-action: auto;
+        z-index: 1070; /* Higher z-index for modal */
     }
 
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.5);
-        -webkit-backdrop-filter: none; /* Disable backdrop filter */
-        pointer-events: none; /* Allow clicks to pass through backdrop */
+        -webkit-backdrop-filter: none;
+        pointer-events: none; /* Allow clicks to pass through */
+        z-index: 1050;
     }
 
     .modal-dialog {
-        z-index: 1065; /* Ensure modal is above backdrop */
+        z-index: 1075;
         -webkit-tap-highlight-color: transparent;
+        max-height: 100vh; /* Ensure modal fits screen */
     }
 
     .modal-content {
         background-color: var(--text-light);
-        -webkit-backface-visibility: hidden; /* Prevent rendering artifacts */
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
-        pointer-events: auto; /* Ensure modal content is interactive */
+        -webkit-tap-highlight-color: transparent;
+        pointer-events: auto;
+        touch-action: auto;
+        max-height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .modal-body {
         -webkit-overflow-scrolling: touch;
         touch-action: auto;
-        overscroll-behavior: contain; /* Prevent overscrolling issues */
+        overscroll-behavior: contain;
+        max-height: calc(100vh - 120px); /* Adjust for header/footer */
     }
 
     .modal-body * {
-        pointer-events: auto; /* Ensure all elements inside modal are clickable */
-        -webkit-user-select: auto; /* Allow text selection */
+        pointer-events: auto;
+        -webkit-user-select: auto;
         user-select: auto;
+        touch-action: auto;
+    }
+
+    .form-control,
+    .form-check-input,
+    .btn {
+        -webkit-appearance: none; /* Remove iOS default styling */
+        touch-action: manipulation; /* Ensure touch events work */
     }
 }
 
