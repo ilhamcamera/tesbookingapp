@@ -9,7 +9,7 @@ const state = {
     bookingData: {},
     units: [],
     categories: [],
-    selectedUnit: null,
+    selectedUnits: [],
     selectedDate: null,
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
@@ -36,7 +36,12 @@ const elements = {
     filterStatus: document.getElementById('filterStatus'),
     filterUnit: document.getElementById('filterUnit'),
     filterCategory: document.getElementById('filterCategory'),
-    tableContainer: document.querySelector('.table-container')
+    tableContainer: document.querySelector('.table-container'),
+    selectedUnitsList: document.getElementById('selectedUnitsList'),
+    addUnitSelect: document.getElementById('addUnitSelect'),
+    addUnitBtn: document.getElementById('addUnitBtn'),
+    unitsError: document.getElementById('unitsError'),
+    noUnitsMessage: document.getElementById('noUnitsMessage')
 };
 
 // Utility Functions
@@ -47,12 +52,10 @@ const utils = {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     },
-
     parseDate: (dateStr) => {
         const [year, month, day] = dateStr.split('-').map(Number);
         return new Date(year, month - 1, day);
     },
-
     formatFullDate: (dateStr) => {
         const date = utils.parseDate(dateStr);
         return date.toLocaleDateString('id-ID', { 
@@ -62,16 +65,13 @@ const utils = {
             year: 'numeric' 
         });
     },
-
     isToday: (date) => {
         const today = new Date();
         return date.getDate() === today.getDate() && 
                date.getMonth() === today.getMonth() && 
                date.getFullYear() === today.getFullYear();
     },
-
     getDaysInMonth: (year, month) => new Date(year, month + 1, 0).getDate(),
-
     debounce: (func, delay) => {
         let timeout;
         return (...args) => {
@@ -79,7 +79,6 @@ const utils = {
             timeout = setTimeout(() => func.apply(this, args), delay);
         };
     },
-
     calculateCellWidth: () => {
         const containerWidth = document.querySelector('.container').clientWidth;
         const daysInMonth = utils.getDaysInMonth(state.currentYear, state.currentMonth);
@@ -88,7 +87,6 @@ const utils = {
         const availableWidth = containerWidth - unitColumnWidth - 20;
         return Math.max(minCellWidth, Math.floor(availableWidth / daysInMonth));
     },
-
     isPastDate: (dateStr) => {
         const selectedDate = utils.parseDate(dateStr);
         const today = new Date();
@@ -136,7 +134,6 @@ const core = {
             throw error;
         }
     },
-
     loadBookingData: async () => {
         if (elements.loadingIndicator) {
             elements.loadingIndicator.style.display = 'flex';
@@ -175,7 +172,6 @@ const core = {
             }
         }
     },
-
     generateDateHeaders: () => {
         while (elements.dateHeaderRow.children.length > 1) {
             elements.dateHeaderRow.removeChild(elements.dateHeaderRow.lastChild);
@@ -198,7 +194,6 @@ const core = {
             elements.dateHeaderRow.appendChild(th);
         }
     },
-
     generateMatrix: () => {
         const monthName = new Date(state.currentYear, state.currentMonth, 1)
             .toLocaleString('id-ID', { month: 'long' });
@@ -279,7 +274,6 @@ const core = {
             elements.matrixBody.appendChild(row);
         });
     },
-
     populateCategoryFilter: () => {
         elements.filterCategory.innerHTML = '<option value="Semua">Semua</option>';
         state.categories.forEach(category => {
@@ -289,7 +283,6 @@ const core = {
             elements.filterCategory.appendChild(option);
         });
     },
-
     populateUnitFilter: () => {
         const selectedCategory = elements.filterCategory.value;
         elements.filterUnit.innerHTML = '<option value="all" data-display-name="all">Semua Barang</option>';
@@ -308,7 +301,42 @@ const core = {
             elements.filterUnit.appendChild(option);
         });
     },
-
+    populateAddUnitSelect: (excludeUnits = [], dateStr) => {
+        elements.addUnitSelect.innerHTML = '<option value="">Pilih Barang</option>';
+        const availableUnits = state.units
+            .filter(unit => {
+                const unitDateKey = `${unit.originalName}_${dateStr}`;
+                return !state.bookingData[unitDateKey] && !excludeUnits.includes(unit.originalName);
+            })
+            .sort((a, b) => a.displayName.localeCompare(b.displayName));
+        
+        availableUnits.forEach(unit => {
+            const option = document.createElement('option');
+            option.value = unit.originalName;
+            option.textContent = unit.displayName;
+            elements.addUnitSelect.appendChild(option);
+        });
+        
+        elements.addUnitSelect.disabled = availableUnits.length === 0;
+        elements.addUnitBtn.disabled = availableUnits.length === 0;
+        elements.noUnitsMessage.style.display = availableUnits.length === 0 ? 'block' : 'none';
+    },
+    updateSelectedUnitsList: () => {
+        elements.selectedUnitsList.innerHTML = '';
+        state.selectedUnits.forEach(unit => {
+            const li = document.createElement('li');
+            li.textContent = state.units.find(u => u.originalName === unit)?.displayName || unit;
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Hapus';
+            removeBtn.addEventListener('click', () => {
+                state.selectedUnits = state.selectedUnits.filter(u => u !== unit);
+                core.updateSelectedUnitsList();
+                core.populateAddUnitSelect(state.selectedUnits, state.selectedDate);
+            });
+            li.appendChild(removeBtn);
+            elements.selectedUnitsList.appendChild(li);
+        });
+    },
     openBookingModal: (unit, dateStr) => {
         const selectedDate = utils.parseDate(dateStr);
         const today = new Date();
@@ -319,13 +347,10 @@ const core = {
             return;
         }
         
-        console.log('Opening modal for unit:', unit, 'date:', dateStr);
+        state.selectedUnits = [unit];
+        state.selectedDate = dateStr;
         
-        state.scrollPosition = window.scrollY || window.pageYOffset;
-        
-        document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
-        document.getElementById('displayUnit').textContent = unit;
         document.getElementById('displayDate').textContent = utils.formatFullDate(dateStr);
         
         const date = utils.parseDate(dateStr);
@@ -337,27 +362,28 @@ const core = {
         document.getElementById('returnTime').value = '17:00';
         
         document.getElementById('bookingForm').reset();
-        document.getElementById('selectedUnit').value = unit;
         document.getElementById('selectedDate').value = dateStr;
-        document.getElementById('displayUnit').textContent = unit;
         document.getElementById('displayDate').textContent = utils.formatFullDate(dateStr);
         document.getElementById('returnDate').value = utils.formatDate(returnDate);
         document.getElementById('pickupTime').value = '08:00';
         document.getElementById('returnTime').value = '17:00';
         document.getElementById('documentsError').style.display = 'none';
+        document.getElementById('unitsError').style.display = 'none';
+        elements.noUnitsMessage.style.display = 'none';
+        
+        core.updateSelectedUnitsList();
+        core.populateAddUnitSelect(state.selectedUnits, dateStr);
         
         const modal = bootstrap.Modal.getInstance(elements.bookingModalElem) || new bootstrap.Modal(elements.bookingModalElem);
         modal.show();
-        console.log('Modal shown');
-
-        // iOS-specific fix: Ensure modal is fully interactive
+        
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             setTimeout(() => {
                 const backdrop = document.querySelector('.modal-backdrop');
                 const modalContent = document.querySelector('.modal-content');
                 const modalBody = document.querySelector('.modal-body');
                 const inputs = modalBody.querySelectorAll('input, textarea, select, button');
-
+                
                 if (backdrop) {
                     backdrop.style.pointerEvents = 'none';
                     backdrop.style.zIndex = '1050';
@@ -379,27 +405,18 @@ const core = {
                     input.style.webkitUserSelect = 'auto';
                     input.style.userSelect = 'auto';
                 });
-
-                // Force focus on first input
+                
                 const firstInput = document.getElementById('pickupTime');
-                if (firstInput) {
-                    firstInput.focus();
-                }
+                if (firstInput) firstInput.focus();
             }, 100);
-
-            // Add touch event listeners to ensure responsiveness
+            
             const modalDialog = document.querySelector('.modal-dialog');
             if (modalDialog) {
-                modalDialog.addEventListener('touchstart', (e) => {
-                    e.stopPropagation();
-                }, { passive: true });
-                modalDialog.addEventListener('touchmove', (e) => {
-                    e.stopPropagation();
-                }, { passive: true });
+                modalDialog.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+                modalDialog.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
             }
         }
     },
-
     toggleFilterPanel: () => {
         state.filterPanelOpen = !state.filterPanelOpen;
         elements.filterPanel.classList.toggle('open', state.filterPanelOpen);
@@ -417,7 +434,6 @@ const core = {
             window.scrollTo(0, state.scrollPosition || 0);
         }
     },
-
     handleWindowResize: utils.debounce(() => {
         if (elements.matrixBody.children.length > 0 && !state.filterPanelOpen) {
             core.generateMatrix();
@@ -425,9 +441,25 @@ const core = {
     }, 500)
 };
 
-// Handle form submission
+// Handle penambahan barang
+elements.addUnitBtn.addEventListener('click', () => {
+    const selectedUnit = elements.addUnitSelect.value;
+    if (selectedUnit && !state.selectedUnits.includes(selectedUnit)) {
+        state.selectedUnits.push(selectedUnit);
+        core.updateSelectedUnitsList();
+        core.populateAddUnitSelect(state.selectedUnits, state.selectedDate);
+        elements.addUnitSelect.value = '';
+    }
+});
+
+// Handle pengiriman form
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    if (state.selectedUnits.length === 0) {
+        elements.unitsError.style.display = 'block';
+        return;
+    }
     
     const documents = Array.from(document.querySelectorAll('input[name="documents"]:checked')).map(cb => cb.value);
     if (documents.length < 3) {
@@ -436,7 +468,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     }
     
     const formData = {
-        unit: document.getElementById('selectedUnit').value,
+        units: state.selectedUnits,
         date: document.getElementById('selectedDate').value,
         pickupTime: document.getElementById('pickupTime').value,
         returnDate: document.getElementById('returnDate').value,
@@ -447,10 +479,14 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
         documents: documents.join(', ')
     };
     
+    const unitNames = formData.units.map(unit => 
+        state.units.find(u => u.originalName === unit)?.displayName || unit
+    ).join(', ');
+    
     const whatsappMessage = `Halo, saya ${formData.name} ingin menyewa barang berikut:
     
 *Detail Penyewaan:*
-Barang: ${formData.unit}
+Barang: ${unitNames}
 Tanggal Sewa: ${utils.formatFullDate(formData.date)} jam ${formData.pickupTime}
 Tanggal Kembali: ${utils.formatFullDate(formData.returnDate)} jam ${formData.returnTime}
 
@@ -470,9 +506,7 @@ Mohon konfirmasi ketersediaannya. Terima kasih.`;
     window.open(whatsappLink, '_blank');
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    if (modal) {
-        modal.hide();
-    }
+    if (modal) modal.hide();
 });
 
 // Event Handlers
@@ -485,7 +519,6 @@ const handlers = {
         }
         core.loadBookingData();
     },
-
     onNextMonth: () => {
         state.currentMonth++;
         if (state.currentMonth > 11) {
@@ -494,7 +527,6 @@ const handlers = {
         }
         core.loadBookingData();
     },
-
     onRefresh: async () => {
         try {
             if (elements.loadingIndicator) {
@@ -510,17 +542,14 @@ const handlers = {
             }
         }
     },
-
     onCategoryChange: () => {
         core.populateUnitFilter();
         core.generateMatrix();
     },
-
     onTouchStart: (e) => {
         state.touchStartX = e.touches[0].clientX;
         state.touchStartY = e.touches[0].clientY;
     },
-
     onTouchMove: (e) => {
         const touchX = e.touches[0].clientX;
         const touchY = e.touches[0].clientY;
@@ -567,7 +596,6 @@ const init = async () => {
     elements.filterUnit.addEventListener('change', core.generateMatrix);
     
     elements.bookingModalElem.addEventListener('show.bs.modal', () => {
-        console.log('Modal is showing');
         state.scrollPosition = window.scrollY || window.pageYOffset;
         document.body.classList.add('modal-open');
         document.body.style.position = 'fixed';
@@ -577,13 +605,11 @@ const init = async () => {
     });
     
     elements.bookingModalElem.addEventListener('shown.bs.modal', () => {
-        console.log('Modal fully shown');
         const firstInput = document.getElementById('pickupTime');
         if (firstInput) firstInput.focus();
     });
     
     elements.bookingModalElem.addEventListener('hidden.bs.modal', () => {
-        console.log('Modal hidden');
         document.body.classList.remove('modal-open');
         document.body.style.position = '';
         document.body.style.top = '';

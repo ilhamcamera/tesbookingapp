@@ -226,19 +226,19 @@ body {
 .filter-panel {
     position: fixed;
     top: 0;
-    transform: translateX(100%); /* Ganti dari right: -100% */
+    transform: translateX(100%);
     width: 100%;
     height: 100%;
     background-color: var(--text-light);
     z-index: 1000;
-    transition: transform 0.3s ease-in-out; /* Ganti dari right ke transform */
+    transition: transform 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    will-change: transform; /* Optimasi performa */
+    will-change: transform;
 }
 
 .filter-panel.open {
-    transform: translateX(0); /* Ganti dari right: 0 */
+    transform: translateX(0);
 }
 
 .filter-header {
@@ -332,10 +332,10 @@ body {
 
 .modal-backdrop {
     z-index: 1055;
-    background-color: transparent; /* Hapus backdrop */
+    background-color: transparent;
 }
 
-/* iOS-specific styles to ensure modal is responsive */
+/* iOS-specific styles */
 @media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
     body.modal-open {
         position: fixed;
@@ -343,27 +343,27 @@ body {
         height: 100%;
         overflow: hidden;
         -webkit-overflow-scrolling: touch;
-        touch-action: none; /* Prevent body scrolling */
+        touch-action: none;
     }
 
     .modal {
-        -webkit-transform: translateZ(0); /* Force hardware acceleration */
+        -webkit-transform: translateZ(0);
         transform: translateZ(0);
         touch-action: auto;
-        z-index: 1070; /* Higher z-index for modal */
+        z-index: 1070;
     }
 
     .modal-backdrop {
-        background-color: transparent; /* Hapus backdrop */
+        background-color: transparent;
         -webkit-backdrop-filter: none;
-        pointer-events: none; /* Allow clicks to pass through */
+        pointer-events: none;
         z-index: 1050;
     }
 
     .modal-dialog {
         z-index: 1075;
         -webkit-tap-highlight-color: transparent;
-        max-height: 100vh; /* Ensure modal fits screen */
+        max-height: 100vh;
     }
 
     .modal-content {
@@ -382,7 +382,7 @@ body {
         -webkit-overflow-scrolling: touch;
         touch-action: auto;
         overscroll-behavior: contain;
-        max-height: calc(100vh - 120px); /* Adjust for header/footer */
+        max-height: calc(100vh - 120px);
     }
 
     .modal-body * {
@@ -395,8 +395,8 @@ body {
     .form-control,
     .form-check-input,
     .btn {
-        -webkit-appearance: none; /* Remove iOS default styling */
-        touch-action: manipulation; /* Ensure touch events work */
+        -webkit-appearance: none;
+        touch-action: manipulation;
     }
 }
 
@@ -500,6 +500,55 @@ body {
     height: 2.5rem;
 }
 
+.selected-units-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+}
+
+.selected-units-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.selected-units-list li button {
+    background: var(--danger-color);
+    color: var(--text-light);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.selected-units-list li button:hover {
+    background: #d32f2f;
+}
+
+.add-unit-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.add-unit-container select {
+    flex: 1;
+}
+
+.no-units-message {
+    font-size: 0.9rem;
+    color: var(--danger-color);
+    margin-top: 8px;
+    display: none;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -518,7 +567,7 @@ body {
 }
 
 @keyframes slideIn {
-    from { transform: translateX(100%); } /* Ganti dari right */
+    from { transform: translateX(100%); }
     to { transform: translateX(0); }
 }
 
@@ -527,14 +576,11 @@ body {
     to { transform: translateX(100%); }
 }
 
-/* Hapus animation, pakai transition saja */
 .filter-panel.open {
-    /* animation: slideIn 0.3s ease-out forwards; */ /* Dihapus */
-    transform: translateX(0); /* Cukup set posisi */
+    transform: translateX(0);
 }
 
 .filter-panel:not(.open) {
-    /* animation: slideOut 0.3s ease-out forwards; */ /* Dihapus */
     transform: translateX(100%);
 }
 

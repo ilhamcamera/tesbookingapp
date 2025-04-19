@@ -22,7 +22,7 @@
 
         <div class="container">
             <div class="header">
-                <h1><i class="fas fa-calendar-check me-2"></i>Ilhamcam BookingApp 1.0</h1>
+                <h1><i class="fas fa-calendar-check me-2"></i>Ilhamcam BookingApp 1.1</h1>
                 <div class="header-actions">
                     <button id="refreshBtn" class="btn btn-icon">
                         <i class="fas fa-sync-alt"></i>
@@ -54,7 +54,6 @@
                 </table>
             </div>
 
-            <!-- Filter Panel -->
             <div class="filter-panel" id="filterPanel">
                 <div class="filter-header">
                     <h2>Filter</h2>
@@ -99,7 +98,6 @@
                 </div>
             </div>
 
-            <!-- Modal Booking -->
             <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-fullscreen-sm-down">
                     <div class="modal-content">
@@ -109,12 +107,16 @@
                         </div>
                         <div class="modal-body">
                             <form id="bookingForm">
-                                <input type="hidden" id="selectedUnit">
                                 <input type="hidden" id="selectedDate">
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">Barang:</label>
-                                    <div id="displayUnit" class="form-control-plaintext fw-bold"></div>
+                                    <label class="form-label">Barang yang Dipilih:</label>
+                                    <ul class="selected-units-list" id="selectedUnitsList"></ul>
+                                    <div class="add-unit-container">
+                                        <select id="addUnitSelect" class="form-select"></select>
+                                        <button type="button" class="btn btn-primary" id="addUnitBtn"><i class="fas fa-plus me-2"></i>Tambah</button>
+                                    </div>
+                                    <div class="no-units-message" id="noUnitsMessage">Tidak ada barang tersedia untuk tanggal ini.</div>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -185,6 +187,9 @@
                                 <div class="alert alert-danger" id="documentsError" style="display:none;">
                                     Harap pilih minimal 3 dokumen jaminan
                                 </div>
+                                <div class="alert alert-danger" id="unitsError" style="display:none;">
+                                    Harap pilih minimal satu barang
+                                </div>
                                 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -204,6 +209,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'932b9112ff07bd4d',t:'MTc0NTA1Njk1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
