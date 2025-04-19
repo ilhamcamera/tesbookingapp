@@ -32,6 +32,7 @@ const elements = {
     filterBtn: document.getElementById('filterBtn'),
     filterPanel: document.getElementById('filterPanel'),
     closeFilterBtn: document.getElementById('closeFilterBtn'),
+    applyFilterBtn: document.getElementById('applyFilterBtn'),
     bookingModalElem: document.getElementById('bookingModal'),
     filterStatus: document.getElementById('filterStatus'),
     filterUnit: document.getElementById('filterUnit'),
@@ -471,6 +472,12 @@ elements.addUnitBtn.addEventListener('click', () => {
         core.populateAddUnitSelect(state.selectedUnits, state.selectedDate, elements.addCategorySelect.value);
         elements.addUnitSelect.value = '';
     }
+});
+
+// Handle tombol Oke pada filter
+elements.applyFilterBtn.addEventListener('click', () => {
+    core.generateMatrix();
+    core.toggleFilterPanel();
 });
 
 // Handle pengiriman form
